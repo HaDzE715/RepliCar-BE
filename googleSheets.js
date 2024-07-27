@@ -1,21 +1,14 @@
 const { google } = require("googleapis");
-require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
+const { promisify } = require("util");
+require("dotenv").config(); // Load environment variables
 
-// Load the service account credentials
-const credentials = {
-  type: process.env.GOOGLE_TYPE,
-  project_id: process.env.GOOGLE_PROJECT_ID,
-  private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-  private_key: process.env.GOOGLE_PRIVATE_KEY.split(String.raw`\n`).join("\n"),
-  client_email: process.env.GOOGLE_CLIENT_EMAIL,
-  client_id: process.env.GOOGLE_CLIENT_ID,
-  auth_uri: process.env.GOOGLE_AUTH_URI,
-  token_uri: process.env.GOOGLE_TOKEN_URI,
-  auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
-  client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
-};
+// Decode the base64 encoded service account JSON
+const base64EncodedServiceAccount = process.env.BASE64_ENCODED_SERVICE_ACCOUNT;
+const decodedServiceAccount = Buffer.from(
+  base64EncodedServiceAccount,
+  "base64"
+).toString("utf-8");
+const credentials = JSON.parse(decodedServiceAccount);
 
 // Configure the client
 const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
@@ -29,7 +22,7 @@ const sheets = google.sheets({ version: "v4", auth });
 // Function to append data to the Google Sheet
 async function appendToSheet(email) {
   const spreadsheetId = "1HfbOhxZvaRpOWnk-nYxgm4nXpouGRmDqzL5GI1opcwg";
-  const range = "A:A"; // Correct any typos in the sheet name
+  const range = "A:A"; // Replace with your sheet name and range
 
   const request = {
     spreadsheetId,
