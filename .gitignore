@@ -1,2 +1,6 @@
 node_modules/
 .env
+
+
+# Google credentials
+replicar-d44a290ee297.json

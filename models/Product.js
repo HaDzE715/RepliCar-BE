@@ -10,6 +10,8 @@ const productSchema = new mongoose.Schema({
   additionalImages: { type: [String], required: true },
   colors: { type: [String], required: true },
   quantity: { type: Number, default: 0 },
+  discount: { type: Boolean, default: false },
+  discount_price: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model("Product", productSchema);
