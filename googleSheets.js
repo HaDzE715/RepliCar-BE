@@ -1,22 +1,36 @@
-require("dotenv").config();
-
 const { google } = require("googleapis");
+require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 
-// Configure the client using environment variables
+// Load the service account credentials
+const credentials = {
+  type: process.env.GOOGLE_TYPE,
+  project_id: process.env.GOOGLE_PROJECT_ID,
+  private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+  private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  client_email: process.env.GOOGLE_CLIENT_EMAIL,
+  client_id: process.env.GOOGLE_CLIENT_ID,
+  auth_uri: process.env.GOOGLE_AUTH_URI,
+  token_uri: process.env.GOOGLE_TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
+};
+
+// Configure the client
+const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
 const auth = new google.auth.GoogleAuth({
-  credentials: {
-    client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  },
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  credentials,
+  scopes,
 });
 
 const sheets = google.sheets({ version: "v4", auth });
 
-const spreadsheetId = "1HfbOhxZvaRpOWnk-nYxgm4nXpouGRmDqzL5GI1opcwg"; // Replace with your actual spreadsheet ID
-const range = "A:A";
-
+// Function to append data to the Google Sheet
 async function appendToSheet(email) {
+  const spreadsheetId = "1HfbOhxZvaRpOWnk-nYxgm4nXpouGRmDqzL5GI1opcwg";
+  const range = "A:A"; // Correct any typos in the sheet name
+
   const request = {
     spreadsheetId,
     range,
