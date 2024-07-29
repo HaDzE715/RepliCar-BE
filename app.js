@@ -1,10 +1,17 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const brandRoutes = require("./routes/brandRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const { appendToSheet } = require("./googleSheets");
+const nodemailer = require("nodemailer");
+const emailTemplate = fs.readFileSync(
+  path.join(__dirname, "emailTemplate.html"),
+  "utf8"
+);
 
 const app = express();
 
@@ -23,6 +30,15 @@ app.use("/api/products", productRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/contact", contactRoutes); // This should mount contactRoutes at /contact
 
+// Nodemailer configuration
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
 // Subscription route
 app.post("/subscribe", async (req, res) => {
   const { email } = req.body;
@@ -33,6 +49,15 @@ app.post("/subscribe", async (req, res) => {
 
   try {
     await appendToSheet(email);
+
+    // Send confirmation email
+    await transporter.sendMail({
+      from: `"Replicar" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Thank you for subscribing!",
+      html: emailTemplate,
+    });
+
     res.status(200).send("Subscription successful");
   } catch (error) {
     console.error("Error appending to sheet:", error);
