@@ -11,11 +11,23 @@
         background-color: #000;
         color: #fff;
         direction: rtl;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
       }
-      .container {
+      .wrapper {
+        background-color: #000;
         width: 90%;
+        max-width: 800px;
         margin: 0 auto;
         padding: 20px;
+        box-sizing: border-box;
+      }
+      .container {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
       }
       .header {
         text-align: center;
@@ -58,10 +70,9 @@
       .product-name {
         font-size: 18px;
         font-weight: bold;
-        direction: ltr;
       }
       .product-brand {
-        font-size: 14px;
+        font-size: 16px;
       }
       .product-price {
         font-size: 24px;
@@ -98,57 +109,47 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <h1>שלום וברוך הבא!</h1>
-        <img src="./Pictures/logo.jpg" alt="Logo" class="logo" />
-      </div>
-      <div class="content">
-        <p>
-          אנחנו נרגשים לקבל את פניך לקהילה שלנו, היכן שכל דגם הוא אייקון וכל
-          חובב הוא חלק ממשפחה גדולה ונלהבת.
-        </p>
-        <img
-          src="./Pictures/collection.jpg"
-          alt="אוסף רכבים"
-          class="product-image"
-        />
-        <br />
-        <a href="URL_TO_WEBSITE" class="cta-button">מעבר לאתר</a>
-        <br />
-        <h3>תכירו את המוצר הכי נמכר אצלנו</h3>
-        <div class="product-card">
-          <img
-            src="./Pictures/Tiffany1.jpeg"
-            alt="מוצר ספיתיפי"
-            class="product-image"
-          />
-          <div class="product-details">
-            <div class="product-name">911 GT3</div>
-            <div class="product-brand">Porsche</div>
-            <div class="product-price">₪349.99</div>
-            <div class="product-size">גודל: 1:24</div>
-            <a href="URL_TO_PRODUCT_PAGE" class="cta-button">מעבר למוצר</a>
-          </div>
+    <div class="wrapper">
+      <div class="container">
+        <div class="header">
+          <h1>שלום וברוך הבא!</h1>
+          <img src="cid:logo" alt="Logo" class="logo" />
         </div>
-        <br />
-      </div>
-      <div class="footer">
-        <img src="./Pictures/logo.jpg" alt="Logo" class="Footer-logo" />
-        <p>תרצו משהו? דברו איתנו</p>
-        <a
-          href="https://www.instagram.com/repli.car/"
-          style="text-decoration: none"
-        >
-          <img
-            src="./Pictures/instalogo.png"
-            alt="Instagram"
-            class="instalogo"
-          />
-        </a>
-        <a href="mailto:EMAIL_ADDRESS" style="text-decoration: none">
-          <img src="./Pictures/EmailLogo.png" alt="Email" class="maillogo" />
-        </a>
+        <div class="content">
+          <p>
+            אנחנו נרגשים לקבל את פניך לקהילה שלנו, היכן שכל דגם הוא אייקון וכל
+            חובב הוא חלק ממשפחה גדולה ונלהבת.
+          </p>
+          <img src="cid:collection" alt="אוסף רכבים" class="product-image" />
+          <br />
+          <a href="URL_TO_WEBSITE" class="cta-button">מעבר לאתר</a>
+          <br />
+          <h3>תכירו את המוצר הכי נמכר אצלנו</h3>
+          <div class="product-card">
+            <img src="cid:product" alt="מוצר ספיתיפי" class="product-image" />
+            <div class="product-details">
+              <div class="product-name">שם המוצר</div>
+              <div class="product-brand">מותג המוצר</div>
+              <div class="product-price">₪199.99</div>
+              <div class="product-size">גודל: גדול</div>
+              <a href="URL_TO_PRODUCT_PAGE" class="cta-button">מעבר למוצר</a>
+            </div>
+          </div>
+          <br />
+        </div>
+        <div class="footer">
+          <img src="cid:footerLogo" alt="Logo" class="Footer-logo" />
+          <p>תרצו משהו? דברו איתנו</p>
+          <a
+            href="https://www.instagram.com/repli.car/"
+            style="text-decoration: none"
+          >
+            <img src="cid:instalogo" alt="Instagram" class="instalogo" />
+          </a>
+          <a href="mailto:EMAIL_ADDRESS" style="text-decoration: none">
+            <img src="cid:emaillogo" alt="Emaillogo" class="maillogo" />
+          </a>
+        </div>
       </div>
     </div>
   </body>
