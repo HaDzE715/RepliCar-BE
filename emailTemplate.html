@@ -1,75 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thank You for Subscribing</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;700&display=swap");
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Noto Sans Hebrew", sans-serif;
         background-color: #000;
-        margin: 0;
-        padding: 0;
+        color: #fff;
+        direction: rtl;
       }
       .container {
-        background-color: #ffffff;
-        margin: 50px auto;
+        width: 90%;
+        margin: 0 auto;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
       }
       .header {
         text-align: center;
-        padding: 10px 0;
+        padding: 20px;
       }
-      .header h1 {
-        color: #333;
-        margin: 0;
+      .logo {
+        width: 100%;
+        max-width: 350px;
       }
       .content {
-        padding: 20px;
+        margin-top: 20px;
         text-align: center;
       }
-      .content p {
-        color: #666;
-        line-height: 1.6;
-        margin: 10px 0;
-      }
-      .content a {
-        color: #007bff;
+      .cta-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #f39c12;
+        color: white;
         text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      .product-card {
+        background-color: #1a1a1a;
+        padding: 20px;
+        border-radius: 10px;
+        display: inline-block;
+        text-align: center;
+        margin-top: 20px;
+      }
+      .product-image {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        margin: 0 auto;
+      }
+      .product-details {
+        margin-top: 10px;
+      }
+      .product-name {
+        font-size: 18px;
+        font-weight: bold;
+        direction: ltr;
+      }
+      .product-brand {
+        font-size: 14px;
+      }
+      .product-price {
+        font-size: 24px;
+        color: #f39c12;
+        margin-top: 10px;
+      }
+      .product-size {
+        font-size: 16px;
+        color: #ccc;
+        margin-top: 5px;
       }
       .footer {
         text-align: center;
-        padding: 10px;
-        color: #999;
-        font-size: 12px;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #fff;
+      }
+      .Footer-logo {
+        width: 100px;
+        margin: 0 10px;
+      }
+      .footer p {
+        margin-top: 10px;
+      }
+      .maillogo {
+        width: 35px;
+        height: 35px;
+        text-decoration: none;
+        color: white;
+      }
+      .instalogo {
+        width: 45px !important;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <h1>Thank You for Subscribing!</h1>
+        <h1>שלום וברוך הבא!</h1>
+        <img src="./Pictures/logo.jpg" alt="Logo" class="logo" />
       </div>
       <div class="content">
-        <p>We appreciate your interest in our newsletter.</p>
-        <div
-          style="background-color: #f9f9f9; padding: 20px; border-radius: 5px"
-        >
-          <p>
-            Stay tuned for updates on new collections and exclusive offers
-            directly to your inbox.
-          </p>
-          <p>
-            If you have any questions, feel free to
-            <a href="mailto:repli.car911@gmail.com">contact us</a>.
-          </p>
+        <p>
+          אנחנו נרגשים לקבל את פניך לקהילה שלנו, היכן שכל דגם הוא אייקון וכל
+          חובב הוא חלק ממשפחה גדולה ונלהבת.
+        </p>
+        <img
+          src="./Pictures/collection.jpg"
+          alt="אוסף רכבים"
+          class="product-image"
+        />
+        <br />
+        <a href="URL_TO_WEBSITE" class="cta-button">מעבר לאתר</a>
+        <br />
+        <h3>תכירו את המוצר הכי נמכר אצלנו</h3>
+        <div class="product-card">
+          <img
+            src="./Pictures/Tiffany1.jpeg"
+            alt="מוצר ספיתיפי"
+            class="product-image"
+          />
+          <div class="product-details">
+            <div class="product-name">911 GT3</div>
+            <div class="product-brand">Porsche</div>
+            <div class="product-price">₪349.99</div>
+            <div class="product-size">גודל: 1:24</div>
+            <a href="URL_TO_PRODUCT_PAGE" class="cta-button">מעבר למוצר</a>
+          </div>
         </div>
+        <br />
       </div>
       <div class="footer">
-        <p>&copy; 2024 Replicar. All rights reserved.</p>
+        <img src="./Pictures/logo.jpg" alt="Logo" class="Footer-logo" />
+        <p>תרצו משהו? דברו איתנו</p>
+        <a
+          href="https://www.instagram.com/repli.car/"
+          style="text-decoration: none"
+        >
+          <img
+            src="./Pictures/instalogo.png"
+            alt="Instagram"
+            class="instalogo"
+          />
+        </a>
+        <a href="mailto:EMAIL_ADDRESS" style="text-decoration: none">
+          <img src="./Pictures/EmailLogo.png" alt="Email" class="maillogo" />
+        </a>
       </div>
     </div>
   </body>
