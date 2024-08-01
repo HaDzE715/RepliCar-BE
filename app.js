@@ -48,6 +48,8 @@ app.post("/subscribe", async (req, res) => {
   }
 
   try {
+    await appendToSheet(email);
+
     await transporter.sendMail({
       from: `"Replicar" <${process.env.EMAIL_USER}>`,
       to: email,
