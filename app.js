@@ -6,12 +6,16 @@ const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const brandRoutes = require("./routes/brandRoutes");
 const contactRoutes = require("./routes/contactRoutes");
-const { appendToSheet } = require("./googleSheets");
+
+const { appendToSheet } = require("./services/googleSheets");
 const nodemailer = require("nodemailer");
-const emailTemplate = fs.readFileSync(
-  path.join(__dirname, "emailTemplate.html"),
-  "utf8"
+const emailTemplatePath = path.join(
+  __dirname,
+  "./templates",
+  "emailTemplate.html"
 );
+let emailTemplate;
+emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
 
 const app = express();
 
@@ -88,9 +92,12 @@ app.post("/subscribe", async (req, res) => {
         },
       ],
     });
+
     console.log("Email sent successfully");
+    res.status(200).json({ success: true, message: "Subscription successful" });
   } catch (error) {
     console.error("Error sending email:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 

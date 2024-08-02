@@ -1,4 +1,4 @@
-const { sendContactEmail } = require("../services/emailService");
+const { sendContactEmail } = require('../services/emailService');
 
 const handleContactForm = async (req, res) => {
   const contactData = req.body;
