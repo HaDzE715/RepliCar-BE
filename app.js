@@ -24,6 +24,7 @@ const app = express();
 require("dotenv").config();
 // Simple route to test speed performance
 app.get("/ping", (req, res) => {
+  connectDB();
   res.send("1");
 });
 // Connect to MongoDB
