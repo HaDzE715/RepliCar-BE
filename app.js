@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const brandRoutes = require("./routes/brandRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const clientInfoBeforePurchaseRoutes = require("./routes/clientInfoBeforePurchaseRoutes");
 
 const { appendToSheet } = require("./services/googleSheets");
 const nodemailer = require("nodemailer");
@@ -21,7 +22,10 @@ const app = express();
 
 // Load environment variables
 require("dotenv").config();
-
+// Simple route to test speed performance
+app.get("/ping", (req, res) => {
+  res.send("1");
+});
 // Connect to MongoDB
 connectDB();
 
@@ -33,6 +37,7 @@ app.use(express.json());
 app.use("/api/products", productRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/contact", contactRoutes); // This should mount contactRoutes at /contact
+app.use("/api/clientInfoBeforePurchase", clientInfoBeforePurchaseRoutes);
 
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
