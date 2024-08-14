@@ -22,13 +22,9 @@ const app = express();
 
 // Load environment variables
 require("dotenv").config();
-// Simple route to test speed performance
-app.get("/ping", (req, res) => {
-  connectDB();
-  res.send("1");
-});
+
 // Connect to MongoDB
-connectDB();
+const dbConnection = connectDB();
 
 // Middleware
 app.use(cors());
@@ -105,6 +101,13 @@ app.post("/subscribe", async (req, res) => {
     console.error("Error sending email:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
+});
+
+// Handle graceful shutdown
+process.on("SIGINT", async () => {
+  console.log("Closing MongoDB connection and shutting down server...");
+  await dbConnection.close(); // Close the MongoDB connection
+  process.exit(0); // Exit the process
 });
 
 // Start server
