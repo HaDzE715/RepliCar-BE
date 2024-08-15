@@ -44,7 +44,10 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
-
+// API for UptimeRobot
+app.get("/", (req, res) => {
+  res.send("Backend is up and running");
+});
 // Subscription route
 app.post("/subscribe", async (req, res) => {
   const { email } = req.body;
