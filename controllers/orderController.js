@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 
+// Get all orders
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate("products.product");
@@ -9,16 +10,51 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
+// Create a new order
 exports.createOrder = async (req, res) => {
-  const order = new Order(req.body);
+  const { user, products, orderNumber, totalPrice, shippingAddress } = req.body;
+
+  // Ensure that user and products array are well-formed
+  if (!user || !user.name || !user.email || !user.phone) {
+    return res.status(400).json({ message: "User details are required" });
+  }
+
+  if (!Array.isArray(products) || products.length === 0) {
+    return res.status(400).json({ message: "Products are required" });
+  }
+
   try {
-    const newOrder = await order.save();
-    res.status(201).json(newOrder);
+    const newOrder = new Order({
+      orderNumber,
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+      },
+      shippingAddress: {
+        city: shippingAddress.city,
+        streetAddress: shippingAddress.streetAddress,
+      },
+      products: products.map((product) => ({
+        product: product.product, // Assuming 'product' in the client is the ObjectId
+        quantity: product.quantity,
+      })),
+      totalPrice,
+    });
+
+    // Validate before saving to catch any schema-related issues
+    await newOrder.validate();
+
+    // Save the order to the database
+    const savedOrder = await newOrder.save();
+    res.status(201).json(savedOrder);
   } catch (error) {
+    console.error("Error creating order:", error.message);
     res.status(400).json({ message: error.message });
   }
 };
 
+// Get an order by ID
 exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate(
@@ -31,6 +67,7 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+// Update an order
 exports.updateOrder = async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
@@ -43,6 +80,7 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
+// Delete an order
 exports.deleteOrder = async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);
