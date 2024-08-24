@@ -110,7 +110,7 @@ app.post("/subscribe", async (req, res) => {
 // Handle graceful shutdown
 process.on("SIGINT", async () => {
   console.log("Closing MongoDB connection and shutting down server...");
-  await dbConnection.close(); // Close the MongoDB connection
+  await mongoose.connection.close(); // Close the MongoDB connection
   process.exit(0); // Exit the process
 });
 
