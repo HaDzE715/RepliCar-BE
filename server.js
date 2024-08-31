@@ -9,6 +9,7 @@ const brandRoutes = require("./routes/brandRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const clientInfoBeforePurchaseRoutes = require("./routes/clientInfoBeforePurchaseRoutes");
 const ordersRoutes = require("./routes/orderRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const { appendToSheet } = require("./services/googleSheets");
 const nodemailer = require("nodemailer");
@@ -38,6 +39,8 @@ app.use("/api/brands", brandRoutes);
 app.use("/contact", contactRoutes); // This should mount contactRoutes at /contact
 app.use("/api/clientInfoBeforePurchase", clientInfoBeforePurchaseRoutes);
 app.use("/api/orders", ordersRoutes);
+app.use("/api", notificationRoutes);
+
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
   service: "Gmail",

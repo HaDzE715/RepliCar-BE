@@ -12,6 +12,8 @@ const productSchema = new mongoose.Schema({
   quantity: { type: Number, default: 0 },
   discount: { type: Boolean, default: false },
   discount_price: { type: Number, default: 0 },
+  sold: { type: Number, default: 0 },
+  category: { type: String, default: "Diecast" },
 });
 
 module.exports = mongoose.model("Product", productSchema);

@@ -2,13 +2,29 @@ const Product = require("../models/Product");
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate("brand");
+    const { brand, category, minPrice, maxPrice } = req.query;
+    let filter = {};
+
+    if (brand) {
+      filter.brand = new RegExp(brand, "i"); // Case-insensitive search
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = parseFloat(minPrice); // Greater than or equal to minPrice
+      if (maxPrice) filter.price.$lte = parseFloat(maxPrice); // Less than or equal to maxPrice
+    }
+
+    const products = await Product.find(filter);
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 exports.createProduct = async (req, res) => {
   const product = new Product(req.body);
   try {

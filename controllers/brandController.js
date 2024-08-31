@@ -1,4 +1,5 @@
 const Brand = require("../models/Brand");
+const Product = require("../models/Product");
 
 // Get all brands or search by name
 exports.getAllBrands = async (req, res) => {
@@ -15,7 +16,6 @@ exports.getAllBrands = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 // Create a new brand
 exports.createBrand = async (req, res) => {
   const { name, founder, city, country, month, day, year, logo } = req.body;
