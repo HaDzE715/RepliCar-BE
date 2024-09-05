@@ -1,5 +1,5 @@
 const Order = require("../models/Order");
-
+const mongoose = require("mongoose");
 // Get all orders
 exports.getAllOrders = async (req, res) => {
   try {
@@ -12,7 +12,14 @@ exports.getAllOrders = async (req, res) => {
 
 // Create a new order
 exports.createOrder = async (req, res) => {
-  const { user, products, orderNumber, totalPrice, shippingAddress } = req.body;
+  const {
+    user,
+    products,
+    orderNumber,
+    totalPrice,
+    shippingAddress,
+    orderNotes,
+  } = req.body;
 
   // Ensure that user and products array are well-formed
   if (!user || !user.name || !user.email || !user.phone) {
@@ -21,6 +28,14 @@ exports.createOrder = async (req, res) => {
 
   if (!Array.isArray(products) || products.length === 0) {
     return res.status(400).json({ message: "Products are required" });
+  }
+
+  if (
+    !shippingAddress ||
+    !shippingAddress.streetAddress ||
+    !shippingAddress.city
+  ) {
+    return res.status(400).json({ message: "Shipping address is required" });
   }
 
   try {
@@ -36,7 +51,7 @@ exports.createOrder = async (req, res) => {
         streetAddress: shippingAddress.streetAddress,
       },
       products: products.map((product) => ({
-        product: product.product, // Assuming 'product' in the client is the ObjectId
+        product: new mongoose.Types.ObjectId(product.product), // Correct usage of ObjectId with 'new'
         quantity: product.quantity,
       })),
       totalPrice,
