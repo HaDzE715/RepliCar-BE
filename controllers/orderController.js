@@ -19,9 +19,10 @@ exports.createOrder = async (req, res) => {
     totalPrice,
     shippingAddress,
     orderNotes,
+    transaction_uid,
   } = req.body;
 
-  // Ensure that user and products array are well-formed
+  // Ensure user and products array are well-formed
   if (!user || !user.name || !user.email || !user.phone) {
     return res.status(400).json({ message: "User details are required" });
   }
@@ -39,6 +40,32 @@ exports.createOrder = async (req, res) => {
   }
 
   try {
+    // Step 1: Verify the transaction with PayPlus
+    const verifyTransaction = await axios.post(
+      "https://restapi.payplus.co.il/api/v1.0/TransactionReports/TransactionsApproval",
+      {
+        terminal_uid: process.env.PAYPLUS_TERMINAL_UID, // Your PayPlus terminal UID
+        filter: { uuid: transaction_uid }, // The transaction UID passed from the client
+        currency_code: "ILS",
+      },
+      {
+        headers: {
+          Authorization: JSON.stringify({
+            api_key: process.env.PAYPLUS_API_KEY,
+            secret_key: process.env.PAYPLUS_API_SECRET_KEY,
+          }),
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Check if the transaction is approved
+    const transactionData = verifyTransaction.data;
+    if (transactionData.status !== "approved") {
+      return res.status(400).json({ message: "Transaction not approved" });
+    }
+
+    // Step 2: Create the order if the transaction is verified
     const newOrder = new Order({
       orderNumber,
       user: {
@@ -51,17 +78,15 @@ exports.createOrder = async (req, res) => {
         streetAddress: shippingAddress.streetAddress,
       },
       products: products.map((product) => ({
-        product: new mongoose.Types.ObjectId(product.product), // Correct usage of ObjectId with 'new'
+        product: new mongoose.Types.ObjectId(product.product), // Correct usage of ObjectId
         quantity: product.quantity,
       })),
       totalPrice,
       orderNotes,
     });
 
-    // Validate before saving to catch any schema-related issues
+    // Validate and save the order
     await newOrder.validate();
-
-    // Save the order to the database
     const savedOrder = await newOrder.save();
     res.status(201).json(savedOrder);
   } catch (error) {
