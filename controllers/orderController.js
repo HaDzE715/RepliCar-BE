@@ -19,6 +19,7 @@ exports.createOrder = async (req, res) => {
     totalPrice,
     shippingAddress,
     orderNotes,
+    transaction_uid,
   } = req.body;
 
   // Ensure that user and products array are well-formed
@@ -56,6 +57,7 @@ exports.createOrder = async (req, res) => {
       })),
       totalPrice,
       orderNotes,
+      transaction_uid,
     });
 
     // Validate before saving to catch any schema-related issues
