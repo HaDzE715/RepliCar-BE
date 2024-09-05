@@ -7,6 +7,8 @@ const paymentSchema = new mongoose.Schema({
   phone: String,
   amount: Number,
   payment_page_link: String,
+  page_request_uid: String,
+  transaction_uid: String,
   orderNumber: String,
   status: {
     type: String,

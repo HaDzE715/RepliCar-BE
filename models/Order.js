@@ -22,6 +22,7 @@ const orderSchema = new mongoose.Schema({
     city: { type: String, required: true },
     streetAddress: { type: String, required: true },
   },
+  orderNotes: { type: String },
   status: { type: String, required: true, default: "pending" },
   createdAt: { type: Date, default: Date.now },
 });

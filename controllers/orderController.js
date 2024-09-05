@@ -40,6 +40,7 @@ exports.createOrder = async (req, res) => {
         quantity: product.quantity,
       })),
       totalPrice,
+      orderNotes,
     });
 
     // Validate before saving to catch any schema-related issues
