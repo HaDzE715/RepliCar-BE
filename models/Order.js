@@ -24,6 +24,10 @@ const orderSchema = new mongoose.Schema({
   },
   orderNotes: { type: String, default: "" },
   status: { type: String, required: true, default: "pending" },
+  transaction_uid: {
+    type: String,
+    required: true, // Ensure the transaction UID is stored and required
+  },
   createdAt: { type: Date, default: Date.now },
 });
 
