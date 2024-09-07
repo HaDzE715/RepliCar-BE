@@ -24,10 +24,12 @@ const createEmailTemplate = ({
       </tr>`
     )
     .join("");
-  const currentDate = new Date().toLocaleString("he-IL", {
+  const currentDate = new Intl.DateTimeFormat("he-IL", {
+    timeZone: "Asia/Jerusalem",
     dateStyle: "short",
     timeStyle: "short",
-  });
+  }).format(new Date());
+
   return `
   <!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -136,8 +138,10 @@ const createEmailTemplate = ({
         <strong>פרטי הלקוח:</strong>
         <ul>
           <li>שם הלקוח: ${clientName}</li>
-          <li>כתובת למשלוח: ${shippingAddress.streetAddress}, ${shippingAddress.city}</li>
-          <li>הערות להזמנה: ${orderNotes}</li>
+          <li>כתובת למשלוח: ${shippingAddress.streetAddress}, ${
+    shippingAddress.city
+  }</li>
+          <li>הערות להזמנה: ${orderNotes || "אין הערות"}</li>
         </ul>
       </div>
 
@@ -210,7 +214,6 @@ exports.getAllOrders = async (req, res) => {
 
 // Create a new order
 exports.createOrder = async (req, res) => {
-  // console.log("Request body:", req.body);
   const {
     user,
     products,

@@ -16,13 +16,13 @@ exports.generatePaymentLink = async (req, res) => {
         charge_method: 1,
         amount: amount,
         currency_code: "ILS",
-        sendEmailApproval: true,
+        sendEmailApproval: false,
         sendEmailFailure: true,
         description: description,
         customer: customer,
         callback_url: `${process.env.BASE_URL}/api/payment-callback`,
         send_failure_callback: true,
-        refURL_success:"https://www.replicar.co.il/payment-success",
+        refURL_success: "https://www.replicar.co.il/payment-success",
       },
       {
         headers: {
