@@ -67,6 +67,7 @@ const createEmailTemplate = ({
       }
       .logo-container img {
         width: 100px;
+        margin-bottom: 20px;
       }
       h1, h2 {
         color: #333;
