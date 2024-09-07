@@ -1,73 +1,80 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>אישור הזמנה</title>
+    <title>קבלה</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;700&display=swap"
       rel="stylesheet"
     />
-
     <style>
       body {
         background-color: #f4f4f4;
         margin: 0;
         padding: 20px;
         direction: rtl;
-        font-family: "Noto sans hebrew", sans-serif;
+        font-family: "Noto Sans Hebrew", sans-serif;
+        text-align: right;
       }
-      .email-container {
+      .receipt-container {
         background-color: white;
         max-width: 600px;
         margin: auto;
         border: 1px solid #e0e0e0;
         border-radius: 8px;
         padding: 20px;
-        text-align: right;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       }
-      h1 {
-        color: #333;
+      .logo-container {
+        margin-bottom: 20px;
+        text-align: center;
+        width: 100%;
       }
+      .logo-container img {
+        width: 50%;
+        height: 150px;
+      }
+      h1,
       h2 {
         color: #333;
         margin-bottom: 10px;
       }
       p {
         color: #555;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
       }
       ul {
         list-style-type: none;
         padding: 0;
       }
       li {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
+        color: #333;
       }
-      table {
+      .business-info,
+      .customer-info {
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+      .product-table {
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 20px;
       }
-      th,
-      td {
+      .product-table th,
+      .product-table td {
         padding: 10px;
         border: 1px solid #ddd;
         text-align: right;
       }
-      th {
+      .product-table th {
         background-color: #f8f8f8;
       }
-      .button {
-        text-align: center;
-        margin-top: 30px;
-      }
-      .button a {
-        color: white;
-        background-color: #28a745;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 5px;
+      .total {
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 20px;
       }
       .footer {
         text-align: center;
@@ -78,39 +85,58 @@
     </style>
   </head>
   <body>
-    <div class="email-container">
-      <h1>תודה על הרכישה שלך, האדי ביאעה!</h1>
-      <p>הזמנתך נקלטה בהצלחה. להלן פרטי ההזמנה שלך:</p>
+    <div class="receipt-container">
+      <div class="logo-container">
+        <img src="https://i.imgur.com/L7iIGLi.jpeg" alt="Business Logo" />
+      </div>
 
-      <h2>פרטי הזמנה:</h2>
-      <ul>
-        <li><strong>מספר הזמנה:</strong> 12345</li>
-        <li><strong>סכום לתשלום:</strong> 300₪</li>
-        <li><strong>כתובת למשלוח:</strong> רמת גן, תל אביב</li>
-        <li><strong>הערות להזמנה:</strong> אין</li>
-      </ul>
+      <h1>תודה על הרכישה שלך, ${clientName}!</h1>
+      <p>הזמנתך נקלטה בהצלחה. להלן פרטי העסקה שלך:</p>
+
+      <div class="business-info">
+        <strong>פרטי העסק:</strong>
+        <ul>
+          <li>שם העסק: עסק לדוגמה</li>
+          <li>כתובת: רחוב דוגמה 123, תל אביב</li>
+          <li>טלפון: 050-1234567</li>
+          <li>מספר עוסק: 123456789</li>
+        </ul>
+      </div>
+
+      <div class="customer-info">
+        <strong>פרטי הלקוח:</strong>
+        <ul>
+          <li>שם הלקוח: ${clientName}</li>
+          <li>
+            כתובת למשלוח: ${shippingAddress.streetAddress},
+            ${shippingAddress.city}
+          </li>
+          <li>הערות להזמנה: ${orderNotes}</li>
+        </ul>
+      </div>
 
       <h2>פרטי מוצרים:</h2>
-      <table>
+      <table class="product-table">
         <thead>
           <tr>
             <th>מוצר</th>
             <th>כמות</th>
+            <th>מחיר</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>מודל מכונית 1</td>
-            <td>2</td>
-          </tr>
-          <tr>
-            <td>מודל מכונית 2</td>
-            <td>1</td>
-          </tr>
+          ${productRows}
         </tbody>
       </table>
 
-      <p>ההזמנה שלך תטופל בקרוב. תקבל/י עדכון כאשר היא תהיה מוכנה למשל</p>
+      <p class="total">סה"כ לתשלום: ${totalPrice}₪</p>
+
+      <p>מספר קבלה: ${orderNumber}</p>
+      <p>תאריך: ${currentDate}</p>
+
+      <div class="footer">
+        <p>עסק פטור - קבלה זו אינה כוללת מע"מ</p>
+      </div>
     </div>
   </body>
 </html>
