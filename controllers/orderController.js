@@ -1,5 +1,166 @@
 const Order = require("../models/Order");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
+// Email template generator
+const createEmailTemplate = ({
+  clientName,
+  orderNumber,
+  totalPrice,
+  shippingAddress,
+  products,
+  orderNotes,
+}) => {
+  return `
+    <!DOCTYPE html>
+    <html lang="he">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>אישור הזמנה</title>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+
+        <style>
+          body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+            font-family: 'Noto Sans Hebrew', sans-serif;
+          }
+          .email-container {
+            background-color: white;
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: right;
+          }
+          h1 {
+            color: #333;
+          }
+          h2 {
+            color: #333;
+            margin-bottom: 10px;
+          }
+          p {
+            color: #555;
+            margin-bottom: 15px;
+          }
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          li {
+            margin-bottom: 10px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+          }
+          th,
+          td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: right;
+          }
+          th {
+            background-color: #f8f8f8;
+          }
+          .button {
+            text-align: center;
+            margin-top: 30px;
+          }
+          .button a {
+            color: white;
+            background-color: #28a745;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <h1>תודה על הרכישה שלך, ${clientName}!</h1>
+          <p>הזמנתך נקלטה בהצלחה. להלן פרטי ההזמנה שלך:</p>
+
+          <h2>פרטי הזמנה:</h2>
+          <ul>
+            <li><strong>מספר הזמנה:</strong> ${orderNumber}</li>
+            <li><strong>סכום לתשלום:</strong> ${totalPrice}₪</li>
+            <li><strong>כתובת למשלוח:</strong> ${
+              shippingAddress.streetAddress
+            }, ${shippingAddress.city}</li>
+            <li><strong>הערות להזמנה:</strong> ${orderNotes || "אין"}</li>
+          </ul>
+
+          <h2>פרטי מוצרים:</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>מוצר</th>
+                <th>כמות</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${products
+                .map(
+                  (product) => `
+                  <tr>
+                    <td>${product.name}</td>
+                    <td>${product.quantity}</td>
+                  </tr>
+                `
+                )
+                .join("")}
+            </tbody>
+          </table>
+
+          <p>ההזמנה שלך תטופל בקרוב. תקבל/י עדכון כאשר היא תהיה מוכנה למשלוח.</p>
+        </div>
+      </body>
+    </html>
+  `;
+};
+
+// Function to send the email
+const sendOrderConfirmationEmail = async (orderDetails) => {
+  // Configure the transport for email
+  const transporter = nodemailer.createTransport({
+    service: "gmail", // Or use any other email service provider
+    auth: {
+      user: process.env.EMAIL, // Sender's email address
+      pass: process.env.EMAIL_PASSWORD, // Sender's email password
+    },
+  });
+
+  // Mail options
+  const mailOptions = {
+    from: "no-reply@replicar.co.il", // Sender address
+    to: orderDetails.user.email, // Receiver email
+    subject: `אישור הזמנה - מספר הזמנה: ${orderDetails.orderNumber}`,
+    html: createEmailTemplate(orderDetails), // HTML body
+  };
+
+  // Send email
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Order confirmation email sent successfully!");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
 // Get all orders
 exports.getAllOrders = async (req, res) => {
   try {
@@ -65,6 +226,15 @@ exports.createOrder = async (req, res) => {
 
     // Save the order to the database
     const savedOrder = await newOrder.save();
+    // Send email upon order creation
+    await sendOrderConfirmationEmail({
+      clientName: user.name,
+      orderNumber,
+      totalPrice,
+      shippingAddress,
+      products,
+      orderNotes,
+    });
     res.status(201).json(savedOrder);
   } catch (error) {
     console.error("Error creating order:", error.message);
