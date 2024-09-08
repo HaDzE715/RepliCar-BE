@@ -242,20 +242,32 @@ exports.createOrder = async (req, res) => {
   }
 
   try {
-    // Fetch product details from the database
+    // Fetch product details and update stock quantities
     const productDetails = await Promise.all(
       products.map(async (product) => {
         const productData = await Product.findById(product.product).lean();
         if (!productData) {
           throw new Error(`Product with ID ${product.product} not found`);
         }
+
+        // Update product quantity (reduce stock)
+        const updatedProduct = await Product.findByIdAndUpdate(
+          product.product,
+          {
+            $inc: { quantity: -product.quantity }, // Decrease the quantity by the purchased amount
+          },
+          { new: true } // Return the updated document
+        );
+
         return {
-          productName: productData.name, // Assuming your product schema has a 'name' field
+          productName: productData.name,
           quantity: product.quantity,
           price: productData.price,
         };
       })
     );
+
+    // Create the order
     const newOrder = new Order({
       orderNumber,
       user: {
@@ -268,7 +280,7 @@ exports.createOrder = async (req, res) => {
         streetAddress: shippingAddress.streetAddress,
       },
       products: products.map((product) => ({
-        product: new mongoose.Types.ObjectId(product.product), // Correct usage of ObjectId with 'new'
+        product: new mongoose.Types.ObjectId(product.product),
         quantity: product.quantity,
       })),
       totalPrice,
@@ -276,11 +288,12 @@ exports.createOrder = async (req, res) => {
       transaction_uid,
     });
 
-    // Validate before saving to catch any schema-related issues
+    // Validate before saving
     await newOrder.validate();
 
     // Save the order to the database
     const savedOrder = await newOrder.save();
+
     // Send email upon order creation
     await sendOrderConfirmationEmail({
       clientName: user.name,
@@ -291,6 +304,7 @@ exports.createOrder = async (req, res) => {
       orderNotes,
       email: req.body.user.email,
     });
+
     res.status(201).json(savedOrder);
   } catch (error) {
     console.error("Error creating order:", error.message);
