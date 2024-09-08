@@ -61,13 +61,12 @@ const createEmailTemplate = ({
         position: relative;
       }
       .logo-container {
-        position: absolute;
         top: 10px;
-        text-align: center;
+        left: 20px;
+        bottom: 20px !important;
       }
       .logo-container img {
-        width: 100px;
-        margin-bottom: 20px;
+        width: 100px; /* Adjust the size of the logo as needed */
       }
       h1, h2 {
         color: #333;
@@ -124,7 +123,7 @@ const createEmailTemplate = ({
         <img src="https://i.imgur.com/L7iIGLi.jpeg" alt="Business Logo" />
       </div>
 
-      <h1>תודה על הרכישה שלך, ${clientName}!</h1>
+      <h1 style={{marginTop:"20px"}}>תודה על הרכישה שלך, ${clientName}!</h1>
       <p>הזמנתך נקלטה בהצלחה. להלן פרטי העסקה שלך:</p>
 
       <div class="business-info">

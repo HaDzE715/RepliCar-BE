@@ -15,7 +15,6 @@
         padding: 20px;
         direction: rtl;
         font-family: "Noto Sans Hebrew", sans-serif;
-        text-align: right;
       }
       .receipt-container {
         background-color: white;
@@ -24,25 +23,28 @@
         border: 1px solid #e0e0e0;
         border-radius: 8px;
         padding: 20px;
+        text-align: right;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
       }
       .logo-container {
-        margin-bottom: 20px;
-        text-align: center;
-        width: 100%;
+        top: 10px;
+        left: 20px;
+        bottom: 20px !important;
       }
       .logo-container img {
-        width: 50%;
-        height: 150px;
+        width: 100px; /* Adjust the size of the logo as needed */
       }
       h1,
       h2 {
         color: #333;
         margin-bottom: 10px;
+        direction: rtl !important;
       }
       p {
         color: #555;
         margin-bottom: 10px;
+        direction: rtl !important;
       }
       ul {
         list-style-type: none;
@@ -56,6 +58,7 @@
       .customer-info {
         margin-bottom: 20px;
         font-size: 14px;
+        direction: rtl !important;
       }
       .product-table {
         width: 100%;
@@ -96,10 +99,8 @@
       <div class="business-info">
         <strong>פרטי העסק:</strong>
         <ul>
-          <li>שם העסק: עסק לדוגמה</li>
-          <li>כתובת: רחוב דוגמה 123, תל אביב</li>
-          <li>טלפון: 050-1234567</li>
-          <li>מספר עוסק: 123456789</li>
+          <li>שם העסק: ה.פ איקומרס</li>
+          <li>מספר עוסק: 315490409</li>
         </ul>
       </div>
 
@@ -108,10 +109,10 @@
         <ul>
           <li>שם הלקוח: ${clientName}</li>
           <li>
-            כתובת למשלוח: ${shippingAddress.streetAddress},
-            ${shippingAddress.city}
+            כתובת למשלוח: ${shippingAddress.streetAddress}, ${
+            shippingAddress.city }
           </li>
-          <li>הערות להזמנה: ${orderNotes}</li>
+          <li>הערות להזמנה: ${orderNotes || "אין הערות"}</li>
         </ul>
       </div>
 
@@ -132,7 +133,7 @@
       <p class="total">סה"כ לתשלום: ${totalPrice}₪</p>
 
       <p>מספר קבלה: ${orderNumber}</p>
-      <p>תאריך: ${currentDate}</p>
+      <p>תאריך ושעה: ${currentDate}</p>
 
       <div class="footer">
         <p>עסק פטור - קבלה זו אינה כוללת מע"מ</p>
