@@ -64,9 +64,11 @@ const createEmailTemplate = ({
         top: 10px;
         left: 20px;
         bottom: 20px !important;
+        text-align: center;
       }
       .logo-container img {
-        width: 100px; /* Adjust the size of the logo as needed */
+        width: 150px;
+        height: 150px;
       }
       h1, h2 {
         color: #333;
@@ -120,7 +122,7 @@ const createEmailTemplate = ({
   <body>
     <div class="receipt-container">
       <div class="logo-container">
-        <img src="https://i.imgur.com/L7iIGLi.jpeg" alt="Business Logo" />
+        <img src="https://i.imgur.com/2Sqkz6S.jpeg" alt="Business Logo" />
       </div>
 
       <h1 style={{marginTop:"20px"}}>תודה על הרכישה שלך, ${clientName}!</h1>
