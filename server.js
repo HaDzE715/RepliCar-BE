@@ -3,6 +3,9 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const brandRoutes = require("./routes/brandRoutes");
@@ -11,6 +14,7 @@ const clientInfoBeforePurchaseRoutes = require("./routes/clientInfoBeforePurchas
 const ordersRoutes = require("./routes/orderRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const { appendToSheet } = require("./services/googleSheets");
 const nodemailer = require("nodemailer");
@@ -21,6 +25,8 @@ const emailTemplatePath = path.join(
 );
 let emailTemplate;
 emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+
+const Admin = require("./models/Admin"); // Assuming you have an Admin model
 
 const app = express();
 
@@ -34,14 +40,31 @@ const dbConnection = connectDB();
 app.use(cors());
 app.use(express.json());
 
+// Session setup
+app.use(
+  session({
+    secret: process.env.SESSION_SECRECT,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // Your MongoDB connection string
+      collectionName: "sessions",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1-day session
+    },
+  })
+);
+
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/brands", brandRoutes);
-app.use("/contact", contactRoutes); // This should mount contactRoutes at /contact
+app.use("/contact", contactRoutes);
 app.use("/api/clientInfoBeforePurchase", clientInfoBeforePurchaseRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", paymentRoutes);
+app.use("/api/admin", authRoutes);
 
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
@@ -51,10 +74,59 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
+
+// Admin login route
+app.post("/api/admin/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // If credentials are valid, create a session
+    req.session.adminId = admin._id;
+    res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Admin logout route
+app.post("/api/admin/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Error logging out" });
+    }
+    res.clearCookie("connect.sid"); // Clear the session cookie
+    res.status(200).json({ message: "Logout successful" });
+  });
+});
+
+// Middleware to protect admin routes
+const isLoggedIn = (req, res, next) => {
+  if (!req.session.adminId) {
+    return res
+      .status(401)
+      .json({ message: "Please log in to access this resource" });
+  }
+  next();
+};
+
+// Example of a protected admin route
+app.use("/api/admin/products", isLoggedIn, productRoutes); // Protect the admin routes
+
 // API for UptimeRobot
 app.get("/", (req, res) => {
   res.send("Backend is up and running");
 });
+
 // Subscription route
 app.post("/subscribe", async (req, res) => {
   const { email } = req.body;
@@ -74,32 +146,32 @@ app.post("/subscribe", async (req, res) => {
       attachments: [
         {
           filename: "logo.jpg",
-          path: "./Pictures/logo.jpg", // Replace with your image file path
-          cid: "logo", // same cid value as in the html img src
+          path: "./Pictures/logo.jpg",
+          cid: "logo",
         },
         {
           filename: "collection.jpg",
-          path: "./Pictures/collection.jpg", // Replace with your image file path
+          path: "./Pictures/collection.jpg",
           cid: "collection",
         },
         {
           filename: "product.jpg",
-          path: "./Pictures/Tiffany1.jpeg", // Replace with your image file path
+          path: "./Pictures/Tiffany1.jpeg",
           cid: "product",
         },
         {
           filename: "footerLogo.jpg",
-          path: "./Pictures/logo.jpg", // Replace with your image file path
+          path: "./Pictures/logo.jpg",
           cid: "footerLogo",
         },
         {
           filename: "instalogo.png",
-          path: "./Pictures/instalogo.png", // Replace with your image file path
+          path: "./Pictures/instalogo.png",
           cid: "instalogo",
         },
         {
           filename: "emaillogo.png",
-          path: "./Pictures/EmailLogo.png", // Replace with your image file path
+          path: "./Pictures/EmailLogo.png",
           cid: "emaillogo",
         },
       ],
@@ -116,8 +188,8 @@ app.post("/subscribe", async (req, res) => {
 // Handle graceful shutdown
 process.on("SIGINT", async () => {
   console.log("Closing MongoDB connection and shutting down server...");
-  await mongoose.connection.close(); // Close the MongoDB connection
-  process.exit(0); // Exit the process
+  await mongoose.connection.close();
+  process.exit(0);
 });
 
 // Start server
