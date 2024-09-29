@@ -331,11 +331,9 @@ exports.createOrder = async (req, res) => {
       orderNotes,
       email: user.email,
     });
-    console.log("test", req.body.user.email);
 
     res.status(201).json(savedOrder);
   } catch (error) {
-    console.error("Here? Error creating order:", error.message);
     res.status(400).json({ message: error.message });
   }
 };

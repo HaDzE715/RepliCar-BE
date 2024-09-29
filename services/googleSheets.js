@@ -1,6 +1,6 @@
 const { google } = require("googleapis");
 const { promisify } = require("util");
-require("dotenv").config(); // Load environment variables
+require("dotenv").config(); 
 
 // Decode the base64 encoded service account JSON
 const base64EncodedServiceAccount = process.env.BASE64_ENCODED_SERVICE_ACCOUNT;
@@ -22,7 +22,7 @@ const sheets = google.sheets({ version: "v4", auth });
 // Function to append data to the Google Sheet
 async function appendToSheet(email) {
   const spreadsheetId = "1HfbOhxZvaRpOWnk-nYxgm4nXpouGRmDqzL5GI1opcwg";
-  const range = "A:A"; // Replace with your sheet name and range
+  const range = "A:A";
 
   const request = {
     spreadsheetId,

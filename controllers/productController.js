@@ -25,6 +25,7 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 exports.createProduct = async (req, res) => {
   const product = new Product(req.body);
   try {
@@ -64,5 +65,15 @@ exports.deleteProduct = async (req, res) => {
     res.json({ message: "Product deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+exports.getProductByDiscount = async (req, res) => {
+  try {
+    const discountedProducts = await Product.find({ discount: true });
+    res.status(200).json(discountedProducts);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching discounted products", error });
   }
 };

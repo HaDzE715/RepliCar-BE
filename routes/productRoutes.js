@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController"); // Import the controller
 
+// Get a product by discount
+router.get("/discounted", productController.getProductByDiscount);
 // Get all products or filter by brand
 router.get("/", productController.getAllProducts);
 

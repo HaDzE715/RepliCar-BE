@@ -58,6 +58,7 @@ app.use(
 
 // Routes
 app.use("/api/products", productRoutes);
+app.use("/api/products/discounted", productRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/contact", contactRoutes);
 app.use("/api/clientInfoBeforePurchase", clientInfoBeforePurchaseRoutes);
@@ -151,28 +152,13 @@ app.post("/subscribe", async (req, res) => {
         },
         {
           filename: "collection.jpg",
-          path: "./Pictures/collection.jpg",
+          path: "./Pictures/collection.png",
           cid: "collection",
         },
         {
           filename: "product.jpg",
           path: "./Pictures/Tiffany1.jpeg",
           cid: "product",
-        },
-        {
-          filename: "footerLogo.jpg",
-          path: "./Pictures/logo.jpg",
-          cid: "footerLogo",
-        },
-        {
-          filename: "instalogo.png",
-          path: "./Pictures/instalogo.png",
-          cid: "instalogo",
-        },
-        {
-          filename: "emaillogo.png",
-          path: "./Pictures/EmailLogo.png",
-          cid: "emaillogo",
         },
       ],
     });
