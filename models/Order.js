@@ -23,10 +23,10 @@ const orderSchema = new mongoose.Schema({
     streetAddress: { type: String, required: true },
   },
   orderNotes: { type: String, default: "" },
-  transaction_uid: { type: String, required: true }, // Added field for transaction UID
+  transaction_uid: { type: String, required: true },
   status: { type: String, required: true, default: "pending" },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }, // Optional: to track last updates
+  updatedAt: { type: Date, default: Date.now },
 });
 
 // Add a pre-save hook to update 'updatedAt' automatically

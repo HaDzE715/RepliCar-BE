@@ -12,8 +12,8 @@ const adminSchema = new mongoose.Schema({
     required: true,
   },
   profilePicture: {
-    type: String, // Store the file path or URL of the uploaded profile picture
-    default: "default-profile.jpg", // You can set a default image
+    type: String,
+    default: "default-profile.jpg",
   },
   createdAt: {
     type: Date,

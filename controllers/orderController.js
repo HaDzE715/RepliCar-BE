@@ -1,13 +1,10 @@
 const Order = require("../models/Order");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
-const Product = require("../models/Product"); // Make sure the path is correct
+const Product = require("../models/Product"); 
 
 require("dotenv").config();
 
-// Email template generator
-// Email template generator
-// Email template generator
 const createEmailTemplate = ({
   clientName,
   orderNumber,
@@ -195,12 +192,11 @@ const createEmailTemplate = ({
 
 // Function to send the email
 const sendOrderConfirmationEmail = async (orderDetails) => {
-  // Configure the transport for email
   const transporter = nodemailer.createTransport({
-    service: "Gmail", // Or use any other email service provider
+    service: "Gmail",
     auth: {
-      user: process.env.EMAIL_USER, // Sender's email address
-      pass: process.env.EMAIL_PASS, // Sender's email password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS, 
     },
   });
 
@@ -210,7 +206,7 @@ const sendOrderConfirmationEmail = async (orderDetails) => {
     to: orderDetails.email, // Receiver email
     bcc: "hadebayaa@gmail.com, firasdeeb2@gmail.com",
     subject: `אישור הזמנה - מספר הזמנה: ${orderDetails.orderNumber}`,
-    html: createEmailTemplate(orderDetails), // HTML body
+    html: createEmailTemplate(orderDetails),
   };
 
   // Send email

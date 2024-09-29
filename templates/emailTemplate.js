@@ -1,3 +1,5 @@
+
+const emailTemplate = `
 <!DOCTYPE html>
 <html lang="he">
   <head>
@@ -246,3 +248,6 @@
     </div>
   </body>
 </html>
+`;
+
+module.exports = emailTemplate;

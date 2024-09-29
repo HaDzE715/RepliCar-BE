@@ -16,7 +16,6 @@ exports.notifyMe = async (req, res) => {
     await notification.save();
 
     if (notificationMethod === "email") {
-      // Setup email transport (using Nodemailer)
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {

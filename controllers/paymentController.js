@@ -2,7 +2,7 @@ const axios = require("axios");
 const atob = require("atob");
 require("dotenv").config();
 
-const Payment = require("../models/Payment"); // Assuming you have a Payment model
+const Payment = require("../models/Payment");
 
 exports.generatePaymentLink = async (req, res) => {
   try {

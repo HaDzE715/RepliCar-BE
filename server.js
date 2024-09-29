@@ -1,11 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
-const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const brandRoutes = require("./routes/brandRoutes");
@@ -15,25 +12,10 @@ const ordersRoutes = require("./routes/orderRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const authRoutes = require("./routes/authRoutes");
-
-const { appendToSheet } = require("./services/googleSheets");
-const nodemailer = require("nodemailer");
-const emailTemplatePath = path.join(
-  __dirname,
-  "./templates",
-  "emailTemplate.html"
-);
-let emailTemplate;
-emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-
-const Admin = require("./models/Admin"); // Assuming you have an Admin model
-
+const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const app = express();
 
-// Load environment variables
 require("dotenv").config();
-
-// Connect to MongoDB
 const dbConnection = connectDB();
 
 // Middleware
@@ -47,7 +29,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI, // Your MongoDB connection string
+      mongoUrl: process.env.MONGO_URI, 
       collectionName: "sessions",
     }),
     cookie: {
@@ -66,49 +48,7 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", paymentRoutes);
 app.use("/api/admin", authRoutes);
-
-// Nodemailer configuration
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-// Admin login route
-app.post("/api/admin/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    // If credentials are valid, create a session
-    req.session.adminId = admin._id;
-    res.status(200).json({ message: "Login successful" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// Admin logout route
-app.post("/api/admin/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Error logging out" });
-    }
-    res.clearCookie("connect.sid"); // Clear the session cookie
-    res.status(200).json({ message: "Logout successful" });
-  });
-});
+app.use("/api", subscriptionRoutes);
 
 // Middleware to protect admin routes
 const isLoggedIn = (req, res, next) => {
@@ -120,55 +60,12 @@ const isLoggedIn = (req, res, next) => {
   next();
 };
 
-// Example of a protected admin route
-app.use("/api/admin/products", isLoggedIn, productRoutes); // Protect the admin routes
+// Protect the admin routes
+app.use("/api/admin/products", isLoggedIn, productRoutes); 
 
 // API for UptimeRobot
 app.get("/", (req, res) => {
   res.send("Backend is up and running");
-});
-
-// Subscription route
-app.post("/subscribe", async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).send("Email is required");
-  }
-
-  try {
-    await appendToSheet(email);
-
-    await transporter.sendMail({
-      from: `"Replicar" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Thank you for subscribing!",
-      html: emailTemplate,
-      attachments: [
-        {
-          filename: "logo.jpg",
-          path: "./Pictures/logo.jpg",
-          cid: "logo",
-        },
-        {
-          filename: "collection.jpg",
-          path: "./Pictures/collection.png",
-          cid: "collection",
-        },
-        {
-          filename: "product.jpg",
-          path: "./Pictures/Tiffany1.jpeg",
-          cid: "product",
-        },
-      ],
-    });
-
-    console.log("Email sent successfully");
-    res.status(200).json({ success: true, message: "Subscription successful" });
-  } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
 });
 
 // Handle graceful shutdown
