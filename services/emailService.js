@@ -15,7 +15,7 @@ async function sendContactEmail(contactData) {
 
   const mailOptions = {
     from: `"Replicar Contact Form" <${process.env.EMAIL_USER}>`,
-    to: "hadebayaa@gmail.com",
+    to: "hadebayaa@gmail.com, firasdeeb2@gmail.com",
     subject: "New Contact Form Submission",
     text: `You have a new contact form submission:\n\nName: ${firstName} ${lastName}\nEmail: ${email}\nMessage: ${message}`,
   };
