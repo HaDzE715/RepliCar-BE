@@ -29,7 +29,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI, 
+      mongoUrl: process.env.MONGO_URI,
       collectionName: "sessions",
     }),
     cookie: {
@@ -61,7 +61,7 @@ const isLoggedIn = (req, res, next) => {
 };
 
 // Protect the admin routes
-app.use("/api/admin/products", isLoggedIn, productRoutes); 
+app.use("/api/admin/products", isLoggedIn, productRoutes);
 
 // API for UptimeRobot
 app.get("/", (req, res) => {
@@ -76,7 +76,7 @@ process.on("SIGINT", async () => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
 });
