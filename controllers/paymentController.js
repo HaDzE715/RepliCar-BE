@@ -6,7 +6,7 @@ const Payment = require("../models/Payment");
 
 exports.generatePaymentLink = async (req, res) => {
   try {
-    const { amount, description, customer } = req.body;
+    const { amount, description, customer, refURL } = req.body;
 
     // Make API call to PayPlus to generate the payment link
     const response = await axios.post(
@@ -22,7 +22,7 @@ exports.generatePaymentLink = async (req, res) => {
         customer: customer,
         callback_url: `${process.env.BASE_URL}/api/payment-callback`,
         send_failure_callback: true,
-        refURL_success: "https://www.replicar.co.il/payment-success",
+        refURL_success: refURL || "https://www.replicar.co.il/payment-success",
       },
       {
         headers: {

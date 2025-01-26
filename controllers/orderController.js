@@ -1,7 +1,7 @@
 const Order = require("../models/Order");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
-const Product = require("../models/Product"); 
+const Product = require("../models/Product");
 
 require("dotenv").config();
 
@@ -196,7 +196,7 @@ const sendOrderConfirmationEmail = async (orderDetails) => {
     service: "Gmail",
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, 
+      pass: process.env.EMAIL_PASS,
     },
   });
 
@@ -246,6 +246,8 @@ exports.createOrder = async (req, res) => {
     orderNotes,
     transaction_uid,
   } = req.body;
+
+  console.log("Request Payload:", JSON.stringify(req.body, null, 2));
 
   // Ensure that user and products array are well-formed
   if (!user || !user.name || !user.email || !user.phone) {
@@ -306,6 +308,7 @@ exports.createOrder = async (req, res) => {
       products: products.map((product) => ({
         product: new mongoose.Types.ObjectId(product.product),
         quantity: product.quantity,
+        variant: product.variant || null, // Only pass the variant name
       })),
       totalPrice,
       orderNotes,
