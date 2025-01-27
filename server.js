@@ -14,6 +14,9 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const authRoutes = require("./routes/authRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const app = express();
+const upload = require("./middlewares/multer");
+const { uploadImage } = require("./controllers/imageController");
+const imageRoutes = require("./routes/imageRoutes");
 
 require("dotenv").config();
 const dbConnection = connectDB();
@@ -49,6 +52,7 @@ app.use("/api", notificationRoutes);
 app.use("/api", paymentRoutes);
 app.use("/api/admin", authRoutes);
 app.use("/api", subscriptionRoutes);
+app.use("/api/images", imageRoutes);
 
 // Middleware to protect admin routes
 const isLoggedIn = (req, res, next) => {

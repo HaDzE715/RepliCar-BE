@@ -245,6 +245,7 @@ exports.createOrder = async (req, res) => {
     shippingAddress,
     orderNotes,
     transaction_uid,
+    uploadedImages,
   } = req.body;
 
   console.log("Request Payload:", JSON.stringify(req.body, null, 2));
@@ -288,9 +289,18 @@ exports.createOrder = async (req, res) => {
           productName: productData.name,
           quantity: product.quantity,
           price: productData.price,
+          uploadedImages: product.uploadedImages || [],
         };
       })
     );
+    const normalizedProducts = products.map((product) => ({
+      ...product,
+      uploadedImages: Array.isArray(product.uploadedImages)
+        ? product.uploadedImages
+        : product.uploadedImages
+        ? [product.uploadedImages]
+        : [],
+    }));
     const receiptNumber = await getNextReceiptNumber();
 
     // Create the order
@@ -309,10 +319,12 @@ exports.createOrder = async (req, res) => {
         product: new mongoose.Types.ObjectId(product.product),
         quantity: product.quantity,
         variant: product.variant || null, // Only pass the variant name
+        uploadedImages: product.uploadedImages || [],
       })),
       totalPrice,
       orderNotes,
       transaction_uid,
+      uploadedImages: Array.isArray(uploadedImages) ? uploadedImages : [],
     });
 
     // Validate before saving

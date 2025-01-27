@@ -28,6 +28,11 @@ const orderSchema = new mongoose.Schema({
   },
   orderNotes: { type: String, default: "" },
   transaction_uid: { type: String, required: true },
+  uploadedImages: [
+    {
+      type: String, // Store URLs of uploaded images
+    },
+  ],
   status: { type: String, required: true, default: "pending" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
