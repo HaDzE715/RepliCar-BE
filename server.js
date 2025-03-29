@@ -13,6 +13,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const authRoutes = require("./routes/authRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
+const blogRoutes = require('./routes/blogRoutes');
 const app = express();
 const upload = require("./middlewares/multer");
 const { uploadImage } = require("./controllers/imageController");
@@ -53,6 +54,7 @@ app.use("/api", paymentRoutes);
 app.use("/api/admin", authRoutes);
 app.use("/api", subscriptionRoutes);
 app.use("/api/images", imageRoutes);
+app.use("/api/blogs", blogRoutes);
 
 // Middleware to protect admin routes
 const isLoggedIn = (req, res, next) => {
