@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 // Controller to handle subscription
 exports.subscribeUser = async (req, res) => {
-  const { email } = req.body;
+  const { name, email } = req.body;
 
   if (!email) {
     return res.status(400).send("Email is required");
@@ -20,13 +20,13 @@ exports.subscribeUser = async (req, res) => {
 
   try {
     // Append email to Google Sheet
-    await appendToSheet(email);
+    await appendToSheet(email, name);
 
     // Send confirmation email
     await transporter.sendMail({
       from: `"Replicar" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Thank you for subscribing!",
+      subject: `${name}, ברוך הבא לקהילת רפליקאר!`,
       html: emailTemplate,
       attachments: [
         {
