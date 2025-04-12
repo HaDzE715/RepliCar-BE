@@ -1,11 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/authController");
+const adminController = require("../controllers/adminController");
+const jwtAuth = require("../middlewares/jwtAuthMiddleware");
 
-// Admin login route
-router.post("/login", authController.login);
+// Login route (no auth required)
+router.post("/login", adminController.login);
 
-// Admin logout route
-router.post("/logout", authController.logout);
+// Auth verification route
+router.get("/verify-auth", jwtAuth, adminController.verifyAuth);
+
+// Logout route (auth required)
+router.post("/logout", jwtAuth, adminController.logout);
+
+// Any other admin routes...
 
 module.exports = router;
